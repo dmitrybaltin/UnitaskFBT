@@ -8,11 +8,11 @@
   "author": {
     "name": "Dmitry Baltin",
     "email": "baltin.dmitry@gmail.com",
-    "url": "https://github.com/dmitrybaltin/UnitaskFBT"
+    "url": "https://github.com/dmitrybaltin"
   },
   "license": "MIT",
   "dependencies": {
-    "com.cysharp.unitask": "^2.5.4"
+    "com.cysharp.unitask": "2.5.10"
   },
   "repository": {
     "type": "git",
