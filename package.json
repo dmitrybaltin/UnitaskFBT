@@ -1,6 +1,6 @@
 {
-  "name": "com.baltin.unitask-fbt",
-  "version": "0.5.2",
+  "name": "com.baltin.ufbt",
+  "version": "0.5.3",
   "displayName": "UniTaskFBT",
   "description": "Async Functional Behavior Tree implementation based on UniTask",
   "unity": "2021.2",
