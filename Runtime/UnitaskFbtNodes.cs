@@ -24,9 +24,8 @@ namespace Baltin.UnitaskFBT
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async UniTask<bool> Inverter<T>(
             this T board, 
-            CancellationToken ct, 
-            Func<T, CancellationToken, UniTask<bool>> func)
-            => !await func.Invoke(board, ct);
+            Func<T, UniTask<bool>> func)
+            => !await func.Invoke(board);
 
         /// <summary>
         /// Execute the given func delegate if the given condition is true 
@@ -39,10 +38,9 @@ namespace Baltin.UnitaskFBT
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async UniTask<bool> If<T>(
             this T board, 
-            CancellationToken ct, 
             Func<T, bool> condition, 
-            Func<T, CancellationToken, UniTask<bool>> func) 
-            => condition.Invoke(board) && await func.Invoke(board, ct);
+            Func<T, UniTask<bool>> func) 
+            => condition.Invoke(board) && await func.Invoke(board);
 
         /// <summary>
         /// Classic selector node
@@ -59,24 +57,24 @@ namespace Baltin.UnitaskFBT
         /// <param name="token"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> Selector<T>(this T board, CancellationToken token,
-            Func<T, CancellationToken, UniTask<bool>> f1,
-            Func<T, CancellationToken, UniTask<bool>> f2,
-            Func<T, CancellationToken, UniTask<bool>> f3 = null,
-            Func<T, CancellationToken, UniTask<bool>> f4 = null,
-            Func<T, CancellationToken, UniTask<bool>> f5 = null,
-            Func<T, CancellationToken, UniTask<bool>> f6 = null,
-            Func<T, CancellationToken, UniTask<bool>> f7 = null,
-            Func<T, CancellationToken, UniTask<bool>> f8 = null)
+        public static async UniTask<bool> Selector<T>(this T board, 
+            Func<T, UniTask<bool>> f1,
+            Func<T, UniTask<bool>> f2,
+            Func<T, UniTask<bool>> f3 = null,
+            Func<T, UniTask<bool>> f4 = null,
+            Func<T, UniTask<bool>> f5 = null,
+            Func<T, UniTask<bool>> f6 = null,
+            Func<T, UniTask<bool>> f7 = null,
+            Func<T, UniTask<bool>> f8 = null)
         {
-            var s = f1 is not null && await f1.Invoke(board, token); if(s) return true;
-            s = f2 is not null && await f2.Invoke(board, token); if(s) return true;
-            s = f3 is not null && await f3.Invoke(board, token); if(s) return true;
-            s = f4 is not null && await f4.Invoke(board, token); if(s) return true;
-            s = f5 is not null && await f5.Invoke(board, token); if(s) return true;
-            s = f6 is not null && await f6.Invoke(board, token); if(s) return true;
-            s = f7 is not null && await f7.Invoke(board, token); if(s) return true;
-            s = f8 is not null && await f8.Invoke(board, token); if(s) return true;
+            var s = f1 is not null && await f1.Invoke(board); if(s) return true;
+            s = f2 is not null && await f2.Invoke(board); if(s) return true;
+            s = f3 is not null && await f3.Invoke(board); if(s) return true;
+            s = f4 is not null && await f4.Invoke(board); if(s) return true;
+            s = f5 is not null && await f5.Invoke(board); if(s) return true;
+            s = f6 is not null && await f6.Invoke(board); if(s) return true;
+            s = f7 is not null && await f7.Invoke(board); if(s) return true;
+            s = f8 is not null && await f8.Invoke(board); if(s) return true;
 
             return false;
         }
@@ -95,24 +93,24 @@ namespace Baltin.UnitaskFBT
         /// <param name="f8">Optional delegate receiving T and returning Status</param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> Sequencer<T>(this T board, CancellationToken token,
-            Func<T, CancellationToken, UniTask<bool>> f1,
-            Func<T, CancellationToken, UniTask<bool>> f2,
-            Func<T, CancellationToken, UniTask<bool>> f3 = null,
-            Func<T, CancellationToken, UniTask<bool>> f4 = null,
-            Func<T, CancellationToken, UniTask<bool>> f5 = null,
-            Func<T, CancellationToken, UniTask<bool>> f6 = null,
-            Func<T, CancellationToken, UniTask<bool>> f7 = null,
-            Func<T, CancellationToken, UniTask<bool>> f8 = null)
+        public static async UniTask<bool> Sequencer<T>(this T board,
+            Func<T, UniTask<bool>> f1,
+            Func<T, UniTask<bool>> f2,
+            Func<T, UniTask<bool>> f3 = null,
+            Func<T, UniTask<bool>> f4 = null,
+            Func<T, UniTask<bool>> f5 = null,
+            Func<T, UniTask<bool>> f6 = null,
+            Func<T, UniTask<bool>> f7 = null,
+            Func<T, UniTask<bool>> f8 = null)
         {
-            var s = f1 is not null && await f1.Invoke(board, token); if(!s) return false;
-            s = f2 is not null && await f2.Invoke(board, token); if(!s) return false;
-            s = f3 is not null && await f3.Invoke(board, token); if(!s) return false;
-            s = f4 is not null && await f4.Invoke(board, token); if(!s) return false;
-            s = f5 is not null && await f5.Invoke(board, token); if(!s) return false;
-            s = f6 is not null && await f6.Invoke(board, token); if(!s) return false;
-            s = f7 is not null && await f7.Invoke(board, token); if(!s) return false;
-            s = f8 is not null && await f8.Invoke(board, token); if(!s) return false;
+            var s = f1 is not null && await f1.Invoke(board); if(!s) return false;
+            s = f2 is not null && await f2.Invoke(board); if(!s) return false;
+            s = f3 is not null && await f3.Invoke(board); if(!s) return false;
+            s = f4 is not null && await f4.Invoke(board); if(!s) return false;
+            s = f5 is not null && await f5.Invoke(board); if(!s) return false;
+            s = f6 is not null && await f6.Invoke(board); if(!s) return false;
+            s = f7 is not null && await f7.Invoke(board); if(!s) return false;
+            s = f8 is not null && await f8.Invoke(board); if(!s) return false;
             
             return true;
         }
@@ -132,13 +130,12 @@ namespace Baltin.UnitaskFBT
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async UniTask<bool> ConditionalInverter<T>(
             this T board,
-            CancellationToken token,
             Func<T, bool> condition,
-            Func<T, CancellationToken, UniTask<bool>> func,
-            Func<T, CancellationToken, UniTask<bool>> elseFunc = null)
+            Func<T, UniTask<bool>> func,
+            Func<T, UniTask<bool>> elseFunc = null)
             => condition.Invoke(board)
-                ? await board.Inverter(token, func)
-                : elseFunc != null && await board.Inverter(token, elseFunc);
+                ? await board.Inverter(func)
+                : elseFunc != null && await board.Inverter(elseFunc);
 
         /// <summary>
         /// Check condition before Selector
@@ -156,15 +153,14 @@ namespace Baltin.UnitaskFBT
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async UniTask<bool> ConditionalSelector<T>(
                 this T board,
-                CancellationToken token,
                 Func<T, bool> condition,
-                Func<T, CancellationToken, UniTask<bool>> f1,
-                Func<T, CancellationToken, UniTask<bool>> f2,
-                Func<T, CancellationToken, UniTask<bool>> f3 = null,
-                Func<T, CancellationToken, UniTask<bool>> f4 = null,
-                Func<T, CancellationToken, UniTask<bool>> f5 = null,
-                Func<T, CancellationToken, UniTask<bool>> f6 = null)
-            => condition.Invoke(board) && await board.Selector(token, f1, f2, f3, f4, f5, f6);
+                Func<T, UniTask<bool>> f1,
+                Func<T, UniTask<bool>> f2,
+                Func<T, UniTask<bool>> f3 = null,
+                Func<T, UniTask<bool>> f4 = null,
+                Func<T, UniTask<bool>> f5 = null,
+                Func<T, UniTask<bool>> f6 = null)
+            => condition.Invoke(board) && await board.Selector(f1, f2, f3, f4, f5, f6);
 
         /// <summary>
         /// Check condition before Sequencer
@@ -179,14 +175,14 @@ namespace Baltin.UnitaskFBT
         /// <param name="f6">Optional delegate receiving T and returning Status</param>
         /// <returns>If the condition is false return Failure. Else return the result of Sequencer</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> ConditionalSequencer<T>(this T board, CancellationToken token,
+        public static async UniTask<bool> IfSequencer<T>(this T board,
                 Func<T, bool> condition,
-                Func<T, CancellationToken, UniTask<bool>> f1,
-                Func<T, CancellationToken, UniTask<bool>> f2,
-                Func<T, CancellationToken, UniTask<bool>> f3 = null,
-                Func<T, CancellationToken, UniTask<bool>> f4 = null,
-                Func<T, CancellationToken, UniTask<bool>> f5 = null,
-                Func<T, CancellationToken, UniTask<bool>> f6 = null)
-            => condition.Invoke(board) && await board.Sequencer(token, f1, f2, f3, f4, f5, f6);
+                Func<T, UniTask<bool>> f1,
+                Func<T, UniTask<bool>> f2,
+                Func<T, UniTask<bool>> f3 = null,
+                Func<T, UniTask<bool>> f4 = null,
+                Func<T, UniTask<bool>> f5 = null,
+                Func<T, UniTask<bool>> f6 = null)
+            => condition.Invoke(board) && await board.Sequencer(f1, f2, f3, f4, f5, f6);
     }
 }
