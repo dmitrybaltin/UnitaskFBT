@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Baltin.UnitaskFBT
+namespace Baltin.UFBT
 {
     /// <summary>
     /// Async Functional Behavior Tree pattern
@@ -15,18 +15,6 @@ namespace Baltin.UnitaskFBT
     /// <typeparam name="T">Type of 'blackboard' that represents the controlled object.</typeparam>
     public static class UnitaskFbtNodes
     {
-        /// <summary>
-        /// Classic inverter node
-        /// </summary>
-        /// <param name="board">Blackboard object</param>
-        /// <param name="func">Delegate receiving T and returning Status</param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> Inverter<T>(
-            this T board, 
-            Func<T, UniTask<bool>> func)
-            => !await func.Invoke(board);
-
         /// <summary>
         /// Execute the given func delegate if the given condition is true 
         /// </summary>
@@ -40,7 +28,7 @@ namespace Baltin.UnitaskFBT
             this T board, 
             Func<T, bool> condition, 
             Func<T, UniTask<bool>> func) 
-            => condition.Invoke(board) && await func.Invoke(board);
+            => condition(board) && await func(board);
 
         /// <summary>
         /// Classic selector node
@@ -67,18 +55,19 @@ namespace Baltin.UnitaskFBT
             Func<T, UniTask<bool>> f7 = null,
             Func<T, UniTask<bool>> f8 = null)
         {
-            var s = f1 is not null && await f1.Invoke(board); if(s) return true;
-            s = f2 is not null && await f2.Invoke(board); if(s) return true;
-            s = f3 is not null && await f3.Invoke(board); if(s) return true;
-            s = f4 is not null && await f4.Invoke(board); if(s) return true;
-            s = f5 is not null && await f5.Invoke(board); if(s) return true;
-            s = f6 is not null && await f6.Invoke(board); if(s) return true;
-            s = f7 is not null && await f7.Invoke(board); if(s) return true;
-            s = f8 is not null && await f8.Invoke(board); if(s) return true;
+            var s = await f1(board); if(s) return true;
+            s = await f2(board); if(s) return true;
+            s = f3 is not null && await f3(board); if(s) return true;
+            s = f4 is not null && await f4(board); if(s) return true;
+            s = f5 is not null && await f5(board); if(s) return true;
+            s = f6 is not null && await f6(board); if(s) return true;
+            s = f7 is not null && await f7(board); if(s) return true;
+            s = f8 is not null && await f8(board); if(s) return true;
 
             return false;
         }
         
+        // ReSharper disable Unity.PerformanceAnalysis
         /// <summary>
         /// Classic sequencer node
         /// </summary>
@@ -103,14 +92,14 @@ namespace Baltin.UnitaskFBT
             Func<T, UniTask<bool>> f7 = null,
             Func<T, UniTask<bool>> f8 = null)
         {
-            var s = f1 is not null && await f1.Invoke(board); if(!s) return false;
-            s = f2 is not null && await f2.Invoke(board); if(!s) return false;
-            s = f3 is not null && await f3.Invoke(board); if(!s) return false;
-            s = f4 is not null && await f4.Invoke(board); if(!s) return false;
-            s = f5 is not null && await f5.Invoke(board); if(!s) return false;
-            s = f6 is not null && await f6.Invoke(board); if(!s) return false;
-            s = f7 is not null && await f7.Invoke(board); if(!s) return false;
-            s = f8 is not null && await f8.Invoke(board); if(!s) return false;
+            var s = await f1(board); if(!s) return false;
+            s = await f2(board); if(!s) return false;
+            s = f3 is not null && await f3(board); if(!s) return false;
+            s = f4 is not null && await f4(board); if(!s) return false;
+            s = f5 is not null && await f5(board); if(!s) return false;
+            s = f6 is not null && await f6(board); if(!s) return false;
+            s = f7 is not null && await f7(board); if(!s) return false;
+            s = f8 is not null && await f8(board); if(!s) return false;
             
             return true;
         }
@@ -118,24 +107,6 @@ namespace Baltin.UnitaskFBT
         //Conditional nodes are syntax sugar that check condition before executing the action
         //Every conditional node can be replaced by two nodes the first of them is an Action node containing the condition and wrapping the second mains node 
         //But usually is more convenient to use one conditional node instead
-
-        /// <summary>
-        /// Check condition, execute given action and then return its inverted result 
-        /// </summary>
-        /// <param name="board">Blackboard object</param>
-        /// <param name="condition">Condition given as a delegate returning bool</param>
-        /// <param name="func">Action returning Status</param>
-        /// <param name="elseFunc"></param>
-        /// <returns>If the condition is false return Failure. Else return inverted value of the func</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> ConditionalInverter<T>(
-            this T board,
-            Func<T, bool> condition,
-            Func<T, UniTask<bool>> func,
-            Func<T, UniTask<bool>> elseFunc = null)
-            => condition.Invoke(board)
-                ? await board.Inverter(func)
-                : elseFunc != null && await board.Inverter(elseFunc);
 
         /// <summary>
         /// Check condition before Selector
@@ -151,7 +122,7 @@ namespace Baltin.UnitaskFBT
         /// <param name="f6">Optional delegate receiving T and returning Status</param>
         /// <returns>If the condition is false return Failure. Else return the result of Selector</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<bool> ConditionalSelector<T>(
+        public static async UniTask<bool> IfSelector<T>(
                 this T board,
                 Func<T, bool> condition,
                 Func<T, UniTask<bool>> f1,
@@ -160,7 +131,7 @@ namespace Baltin.UnitaskFBT
                 Func<T, UniTask<bool>> f4 = null,
                 Func<T, UniTask<bool>> f5 = null,
                 Func<T, UniTask<bool>> f6 = null)
-            => condition.Invoke(board) && await board.Selector(f1, f2, f3, f4, f5, f6);
+            => condition(board) && await board.Selector(f1, f2, f3, f4, f5, f6);
 
         /// <summary>
         /// Check condition before Sequencer
@@ -183,6 +154,6 @@ namespace Baltin.UnitaskFBT
                 Func<T, UniTask<bool>> f4 = null,
                 Func<T, UniTask<bool>> f5 = null,
                 Func<T, UniTask<bool>> f6 = null)
-            => condition.Invoke(board) && await board.Sequencer(f1, f2, f3, f4, f5, f6);
+            => condition(board) && await board.Sequencer(f1, f2, f3, f4, f5, f6);
     }
 }
