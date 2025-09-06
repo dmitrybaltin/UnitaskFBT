@@ -29,19 +29,19 @@ With **UnitaskFBT**, you can use async/await syntax to handle long-running actio
 ## Example of Usage
 
 ```csharp
-    await npcBoard.Sequencer(c,                       //Sequencer node
-        static async (b, c) => await b.FindTarget(),  //Action node realized as a delegate Func<NpcBoard, UniTask<bool>> 
-        static async (b, c) => await b.Selector(c,    //Selector node
-            static async (b, c) => await b.If(c,      //Conditional node 
-                static b => b.TargetDistance < 1f,    //Condition
-                static async (b, c) => await b.MeleeAttack()),
-            static async (b, c) => await b.If(c,
+    await npcBoard.Sequencer( //Sequencer node
+        static b => b.FindTarget(), //Action node realized as a delegate Func<NpcBoard, UniTask<bool>> 
+        static b => b.Selector(     //Selector node
+            static b => b.If(       //Conditional node 
+                static b => b.TargetDistance < 1f,  //Condition
+                static b => b.MeleeAttack()),       //Action
+            static b => b.If(
                 static b => b.TargetDistance < 3f,
-                static async (b, c) => await b.RangeAttack()),  //RangeAttack() is the only continuous function in this BT allowing be in the running state
-            static async (b, c) => await b.If(c,
+                static b => b.RangeAttack()), //The only continuous function here that can be "running"
+            static b => b.If(
                 static b => b.TargetDistance < 8f,
-                static async (b, c) => await b.Move()),
-            static async (b, c) => await b.Idle()));
+                static b => b.Move()),
+            static b => b.Idle()));
 ```
 
 Notes: 
@@ -50,8 +50,8 @@ Notes:
 - The construction static async (b, c) => await … in each line may look verbose, but it’s a small price to pay for the huge advantages of an asynchronous behavior tree.
 - If a node needs to continue execution in the next cycle, it does not return Running. Instead, it suspends itself (e.g., using await UniTask.Yield()). In the example above, this happens inside RangeAttack().
 - Since there is no Running state, nodes simply return a boolean (bool) rather than a Status, which simplifies the logic.
-- All nodes accept a CancellationToken for operation cancellation.
 - No closures are used; only static delegates are employed, which avoids additional memory allocations.
+- If CancellationToken required it can be added to Blackboard object
 
 For a detailed comparison between UnitaskFBT and a classical FBT, see this repository [FbtExample](https://github.com/dmitrybaltin/FbtExample)  
 
