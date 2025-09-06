@@ -1,4 +1,4 @@
-![FBT_Logo](.docs/fbt_icon.png)
+![FBT_Logo](.docs/ufbt_icon.png)
 
 # UnitaskFBT
 
@@ -45,16 +45,18 @@ With **UnitaskFBT**, you can use async/await syntax to handle long-running actio
             static b => b.Idle()));
 ```
 
-Notes: 
-- Each tree node is an asynchronous function, not an object.
-- The entire tree is also an asynchronous function, not a static object.
-- The construction static async (b, c) => await … in each line may look verbose, but it’s a small price to pay for the huge advantages of an asynchronous behavior tree.
-- If a node needs to continue execution in the next cycle, it does not return Running. Instead, it suspends itself (e.g., using await UniTask.Yield()). In the example above, this happens inside RangeAttack().
-- Since there is no Running state, nodes simply return a boolean (bool) rather than a Status, which simplifies the logic.
-- No closures are used; only static delegates are employed, which avoids additional memory allocations.
-- If CancellationToken required it can be added to Blackboard object
+Notes:  
+- **Asynchronous nodes**: Each tree node is an asynchronous function, not an object.
+- **Asynchronous tree**: The entire tree is also an asynchronous function.
+- **Suspending instead of Running**: Nodes that need to continue execution use await UniTask.Yield() (e.g., RangeAttack()), so there is no Running state.
+- **Simplified return**: Nodes return **bool instead of a Status**, which simplifies logic.
+- **No closures**: The **static b => …** looks is a bit verbose, but it provides **zero memory allocations** because of using static delegates.
+- **Easy to debug**: Breakpoints can be set on any node function or anonymous delegate. The debugger pauses correctly, letting you inspect state at that point. See the example below.
+- **CancellationToken support**: Can be added to the Blackboard object if needed.
 
-For a detailed comparison between UnitaskFBT and a classical FBT, see this repository [FbtExample](https://github.com/dmitrybaltin/FbtExample)  
+![FBT_Logo](.docs/ufbt_example.png)
+
+Check out a Unity project with examples of using both UnitaskFBT and FBT: [FbtExample](https://github.com/dmitrybaltin/FbtExample)  
 
 ## Installation
 
