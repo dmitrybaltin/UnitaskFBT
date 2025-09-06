@@ -13,7 +13,7 @@ namespace Baltin.UFBT
     /// 3. Extremely fast, because here inside there are only the simplest conditions, loops and procedure calls
     /// </summary>
     /// <typeparam name="T">Type of 'blackboard' that represents the controlled object.</typeparam>
-    public static class UnitaskFbtNodes
+    public static class MainNodes
     {
         /// <summary>
         /// Execute the given func delegate if the given condition is true 
