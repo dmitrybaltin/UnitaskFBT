@@ -97,18 +97,7 @@ If you want to avoid this dependency, you can manually replace `UniTask` with `T
 
 Unfortunately, it is impossible in C# to implement a single, fully generic async solution that works for all Task-like or awaitable types at once — otherwise I would have done it here.
 
-If there is demand from users, I will provide additional versions of the async FBT based on `Task`, `ValueTask`, or a custom awaitable.
-
-## Dependency
-
-This project depends on **UniTask**, which serves as the foundation because it is the most popular and highly optimized async solutions for Unity.
-
-If you want to avoid this dependency, you can manually replace `UniTask` with `Task`, `ValueTask`, or a custom awaitable type in the source. (All the codebase of teh project is ~200 lines including comments).
-
-Unfortunately, it's not practical to implement a single, fully generic async solution that works with all Task-like types at once. 
-
-If there is enough demand, I may provide additional versions of the library based on `Task`, `ValueTask`, or custom awaitables.
-
+If there is demand from users, I will provide additional versions of the async FBT based on `Task`, `ValueTask`, or `Awaitable`.
 
 # Async Functional Behavior Tree Philosophy
 
